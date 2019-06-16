@@ -1,0 +1,4 @@
+ALGORITMO;ARQUIVO DE DADOS;TEMPO
+Bolha;vetor_aleatorio_100000;44,674
+Bolha;vetor_aleatorio_200000;235,984
+Bolha;vetor_aleatorio_400000;865,968
