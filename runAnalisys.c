@@ -24,7 +24,7 @@
 #define FILE_LOG "log.csv"
 
 #define FILE_ROW 50
-#define REPEAT_BY_AVG 1
+#define REPEAT_BY_AVG 10
 
 /* Keys */
 #define BUBBLE_SORT    0
@@ -40,7 +40,7 @@ char **filesByFolder(char *path, int *qtdFiles);
 int  *arrayByFile(char *path, int *qtdArray);
 void writeLineFile(char *path,bool rewrite, char *cols,...);
 
-void prepateRegisterAnalisys();
+void prepareRegisterAnalisys();
 double analiseAlgorithm(int algorithmKey, int *data, int qtdArray);
 void registerAnalisys(char *algorithm, char *source, double elapsed);
 
@@ -50,7 +50,7 @@ char *nameAlgorithm(int algorithmKey);
 
 //======= VARIÁVEIS =========
 
-//======= MAIN ==========
+//========== MAIN ===========
 int main(){
     int qtdFiles = 0, idxFile = 0;
     int qtdArray = 0, idxLine = 0;
@@ -62,24 +62,29 @@ int main(){
 
     setlocale(LC_ALL, "Portuguese");
 
-    prepateRegisterAnalisys();
+    prepareRegisterAnalisys();
     
-    // Itera algoritmos
-    while(idxAlgor <= RADIX_SORT){
+    // Repete algoritmo para calculo posterior de média
+    while(idxAvg < REPEAT_BY_AVG){
+    
+        // Itera algoritmos            
+        while(idxAlgor <= RADIX_SORT){
 
-        // Itera arquivos
-        while(idxFile < qtdFiles){
-            int *data = arrayByFile(combinePath(FOLDER_DATA,files[idxFile]), &qtdArray);
-            
-            //Repete algoritmo para calculo posterior de média
-            for(idxAvg = 0; idxAvg < REPEAT_BY_AVG; idxAvg++){
+            // Itera arquivos
+            while(idxFile < qtdFiles){
+                int *data = arrayByFile(combinePath(FOLDER_DATA,files[idxFile]), &qtdArray);
+
                 cpu_time_usage = analiseAlgorithm(idxAlgor, data, qtdArray);
                 registerAnalisys(nameAlgorithm(idxAlgor), files[idxFile], cpu_time_usage);
+
+                free(data);
+                idxFile++;
             }
-            idxFile++;
+            idxFile = 0; 
+            idxAlgor++;
         }
-        idxAlgor++;
-        idxFile = 0;
+        idxAlgor = 0;
+        idxAvg++;
     }
 
     return 0;
@@ -229,7 +234,7 @@ char *nameAlgorithm(int algorithmKey){
 }
 
 //======= GERAÇÃO DE LOG ======== 
-void prepateRegisterAnalisys(){    
+void prepareRegisterAnalisys(){    
     char *pathLog = combinePath(FOLDER_LOG, FILE_LOG);
     writeLineFile(pathLog, true, "ALGORITMO", "ARQUIVO DE DADOS", "TEMPO", NULL);
 }
